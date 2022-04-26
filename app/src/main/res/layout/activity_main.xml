@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:textColor="#000000"
-        android:text="This app includes agora rtm and a background service to keep agora connected.\n\npress back and keep in background"
+        android:text="This app includes agora rtm and a background service to keep agora connected.\n\nKeep the phone connected to data. Press back and keep in background"
         android:gravity="center"
         android:layout_centerInParent="true"/>
 
