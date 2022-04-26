@@ -6,16 +6,11 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
-import android.net.NetworkRequest;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
@@ -41,9 +36,6 @@ public class BackgroundService extends Service {
     private RtmClient mRtmClient;
 
     private int retriesLeft = 5;
-
-    ConnectivityManager.NetworkCallback networkCallback;
-    ConnectivityManager connectivityManager;
 
     public BackgroundService() {
 
@@ -86,8 +78,6 @@ public class BackgroundService extends Service {
         if (connectivityObserver != null && !connectivityObserver.isDisposed()) {
             connectivityObserver.dispose();
         }
-
-        connectivityManager.unregisterNetworkCallback(networkCallback);
 
         Intent broadcastIntent = new Intent();
         broadcastIntent.setAction("restartservice");
