@@ -21,6 +21,8 @@ import androidx.core.app.NotificationCompat;
 
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork;
 
+import java.util.UUID;
+
 import io.agora.rtm.ErrorInfo;
 import io.agora.rtm.ResultCallback;
 import io.agora.rtm.RtmClient;
@@ -99,10 +101,10 @@ public class BackgroundService extends Service {
     @Override
     public void onTaskRemoved(Intent rootIntent) {
 
-        /*Intent broadcastIntent = new Intent();
+        Intent broadcastIntent = new Intent();
         broadcastIntent.setAction("restartservice");
         broadcastIntent.setClass(this, BootCompletedIntentReceiver.class);
-        this.sendBroadcast(broadcastIntent);*/
+        this.sendBroadcast(broadcastIntent);
 
         if (connectivityObserver != null && !connectivityObserver.isDisposed()) {
             connectivityObserver.dispose();
@@ -115,40 +117,36 @@ public class BackgroundService extends Service {
 
     public void start() {
 
+        if (isStartCalled) {
+            return;
+        }
+
         ChatManager mChatManager = AGApplication.the().getChatManager();
         mRtmClient = mChatManager.getRtmClient();
 
         isStartCalled = true;
         shouldReLogin = false;
 
-        NetworkRequest networkRequest = new NetworkRequest.Builder()
-                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-                .build();
+        connectivityObserver = ReactiveNetwork.observeNetworkConnectivity(getApplicationContext())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(connectivity -> {
+                    //Log.d(TAG, "Network: " + connectivity.toString());
 
-        networkCallback = new ConnectivityManager.NetworkCallback() {
-            @Override
-            public void onAvailable(@NonNull Network network) {
-                super.onAvailable(network);
-                Log.d(TAG, "onAvailable: " + network);
-            }
+                    if (!shouldReLogin) {
+                        return;
+                    }
 
-            @Override
-            public void onLost(@NonNull Network network) {
-                super.onLost(network);
-                Log.d(TAG, "onLost: " + network);
-            }
+                    if (connectivity.state() == NetworkInfo.State.CONNECTED) {
 
-            @Override
-            public void onCapabilitiesChanged(@NonNull Network network, @NonNull NetworkCapabilities networkCapabilities) {
-                super.onCapabilitiesChanged(network, networkCapabilities);
-            }
-        };
-
-        connectivityManager =
-                (ConnectivityManager) getSystemService(ConnectivityManager.class);
-        connectivityManager.requestNetwork(networkRequest, networkCallback);
+                        new java.util.Timer().schedule(new java.util.TimerTask() {
+                            @Override
+                            public void run() {
+                                doLogin();
+                            }
+                        }, 3000);
+                    }
+                });
 
         doLogin();
 
@@ -200,11 +198,13 @@ public class BackgroundService extends Service {
             }
         });
 
-        mRtmClient.login(null, "123321", new ResultCallback<Void>() {
+        String uniqueID = UUID.randomUUID().toString();
+
+        mRtmClient.login(null, uniqueID, new ResultCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 retriesLeft = 5;
-                Log.d(TAG, "Login success!");
+                Log.d(TAG, "Login success! - " + uniqueID);
             }
 
             @Override
