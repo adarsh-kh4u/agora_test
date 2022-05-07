@@ -4,11 +4,20 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.UUID;
+
+import io.agora.rtm.ErrorInfo;
+import io.agora.rtm.ResultCallback;
+import io.agora.rtm.RtmClient;
+
 public class MainActivity extends AppCompatActivity {
+
+    final String TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void doLogin(){
+        ChatManager mChatManager = AGApplication.the().getChatManager();
+        RtmClient mRtmClient = mChatManager.getRtmClient();
+
         mRtmClient.logout(new ResultCallback<Void>() { // to avoid LOGIN_ERR_ALREADY_LOGIN
             @Override
             public void onSuccess(Void aVoid) {
@@ -37,18 +49,12 @@ public class MainActivity extends AppCompatActivity {
         mRtmClient.login(null, uniqueID, new ResultCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                retriesLeft = 5;
                 Log.d(TAG, "Login success! - " + uniqueID);
             }
 
             @Override
             public void onFailure(ErrorInfo errorInfo) {
                 Log.e(TAG, "Login failed! " + errorInfo.toString());
-
-                if (retriesLeft > 0) {
-                    retriesLeft--;
-                    doLogin();
-                }
             }
         });
     }

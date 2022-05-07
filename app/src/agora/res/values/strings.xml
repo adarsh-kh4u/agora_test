@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">Agora test</string>
+    <string name="app_name">Test Agora</string>
     <string translatable="false" name="agora_app_id">72aab03446224e89891e26a4e1a67b4a</string>
 </resources>
