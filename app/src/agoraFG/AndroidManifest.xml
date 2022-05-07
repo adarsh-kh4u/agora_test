@@ -28,6 +28,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ServiceCheckUp">
+        <activity
+            android:name="com.silentkiller.servicecheckup.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <receiver
             android:name=".BootCompletedIntentReceiver"
@@ -56,6 +65,10 @@
             </intent-filter>
         </receiver>
 
+        <service
+            android:name=".BackgroundService"
+            android:enabled="true"
+            android:stopWithTask="false" />
     </application>
 
 </manifest>

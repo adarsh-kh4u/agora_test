@@ -25,6 +25,45 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    flavorDimensions "default"
+
+    productFlavors {
+        agoraFG {
+            applicationId "com.silentkiller.servicecheckup"
+            minSdkVersion 21
+            targetSdkVersion 31
+            versionCode 1
+            versionName "1.0"
+        }
+        fg {
+            applicationId "com.silentkiller.fg"
+            minSdkVersion 21
+            targetSdkVersion 31
+            versionCode 1
+            versionName "1.0"
+        }
+        agora {
+            applicationId "com.silentkiller.agora"
+            minSdkVersion 21
+            targetSdkVersion 31
+            versionCode 1
+            versionName "1.0"
+        }
+    }
+
+    sourceSets.agoraFG {
+        java.srcDirs = ['src/agoraFG/java']
+        res.srcDirs = ['res', 'src/agoraFG/res']
+    }
+    sourceSets.fg {
+        java.srcDirs = ['src/fg/java']
+        res.srcDirs = ['res', 'src/fg/res']
+    }
+    sourceSets.agora {
+        java.srcDirs = ['src/agora/java']
+        res.srcDirs = ['res', 'src/agora/res']
+    }
 }
 
 dependencies {

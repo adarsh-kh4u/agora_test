@@ -2,6 +2,7 @@ package com.silentkiller.servicecheckup;
 
 import android.app.Application;
 
+
 public class AGApplication extends Application {
     private static AGApplication sInstance;
     private ChatManager mChatManager;

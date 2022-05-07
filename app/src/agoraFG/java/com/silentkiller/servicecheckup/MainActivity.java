@@ -14,6 +14,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        TextView textView = findViewById(R.id.text_tv);
+        textView.setText("This app includes Agora RTM and a foreground service to keep agora connected.\n\nKeep the phone connected to data. Press back and keep in background");
+
         if (!isMyServiceRunning(BackgroundService.class, MainActivity.this)) {
             Intent intent = new Intent(MainActivity.this, BackgroundService.class);
             startService(intent);
